@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="https://jakarta.ee/xml/ns/persistence/orm"
+                 version="3.0">
+
+    <entity class="entity.Employee">
+        <table name="employee" schema="test" catalog=""/>
+        <attributes>
+            <id name="id">
+                <column name="id"/>
+            </id>
+            <basic name="firstName">
+                <column name="first_name"/>
+            </basic>
+            <basic name="lastName">
+                <column name="last_name"/>
+            </basic>
+            <basic name="salary">
+                <column name="salary"/>
+            </basic>
+        </attributes>
+    </entity>
+</entity-mappings>
