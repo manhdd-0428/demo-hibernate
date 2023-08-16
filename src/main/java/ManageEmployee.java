@@ -23,9 +23,9 @@ public class ManageEmployee {
         ManageEmployee ME = new ManageEmployee();
 
         /* Add few employee records in database */
-//        Integer empID1 = ME.addEmployee("Zara", "Ali", 1000);
-//        Integer empID2 = ME.addEmployee("Daisy", "Das", 5000);
-//        Integer empID3 = ME.addEmployee("John", "Paul", 10000);
+        Integer empID1 = ME.addEmployee("Zara", "Ali", 1000);
+        Integer empID2 = ME.addEmployee("Daisy", "Das", 5000);
+        Integer empID3 = ME.addEmployee("John", "Paul", 10000);
 
         /* List down all the employees */
         ME.listEmployees();
@@ -41,6 +41,7 @@ public class ManageEmployee {
     }
 
     /* Method to CREATE an employee in the database */
+
     public Integer addEmployee(String fname, String lname, int salary){
         Session session = factory.openSession();
         Transaction tx = null;
