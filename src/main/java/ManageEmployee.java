@@ -1,6 +1,7 @@
+import java.util.InputMismatchException;
 import java.util.List;
-import java.util.Date;
 import java.util.Iterator;
+import java.util.Scanner;
 
 import entity.Employee;
 import org.hibernate.HibernateException;
@@ -8,6 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+
 
 public class ManageEmployee {
     private static SessionFactory factory;
@@ -22,13 +24,11 @@ public class ManageEmployee {
 
         ManageEmployee ME = new ManageEmployee();
 
-        /* Add few employee records in database */
-        Integer empID1 = ME.addEmployee("Zara", "Ali", 1000);
-        Integer empID2 = ME.addEmployee("Daisy", "Das", 5000);
-        Integer empID3 = ME.addEmployee("John", "Paul", 10000);
+        ME.selectMenu();
+
 
         /* List down all the employees */
-        ME.listEmployees();
+//        ME.listEmployees();
 
         /* Update employee's records */
 //        ME.updateEmployee(empID1, 5000);
@@ -120,4 +120,43 @@ public class ManageEmployee {
             session.close();
         }
     }
+
+    public void selectMenu() throws InputMismatchException {
+        int selectedMenu;
+        Scanner aScanner = new Scanner(System.in);
+
+        do {
+            System.out.println("===========ManageEmployee=============");
+            System.out.println("1. List all");
+            System.out.println("2. Add employee ");
+            System.out.println("3. Update employee ");
+            System.out.println("4. Delete employee ");
+            System.out.println("0. Exit");
+            System.out.println("Your choose: ");
+
+            selectedMenu = aScanner.nextInt();
+
+            switch (selectedMenu) {
+                case 1 :
+                    this.listEmployees();
+                    break;
+                case 2 :
+                    System.out.println("Input first name: ");
+                    String fname = aScanner.next();
+                    System.out.println("Input last name: ");
+                    String lname = aScanner.next();
+                    System.out.println("Input salary: ");
+                    int salary = aScanner.nextInt();
+                    this.addEmployee(fname, lname, salary);
+                case 0 :
+                    System.out.println("Exit ...");
+                    break;
+                default:
+                    System.out.println("Incorrect number");
+                    break;
+            }
+
+        } while(selectedMenu != 0);
+    }
+
 }
