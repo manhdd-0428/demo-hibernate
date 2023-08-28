@@ -3,10 +3,12 @@ package entity;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "employee")
 public class Employee {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Basic
     @Column(name = "first_name")
@@ -14,11 +16,15 @@ public class Employee {
     @Basic
     @Column(name = "last_name")
     private String lastName;
+
+
     @Basic
     @Column(name = "salary")
     private Integer salary;
 
-    public Employee() {}
+    public Employee() {
+    }
+
     public Employee(String fname, String lname, int salary) {
         this.firstName = fname;
         this.lastName = lname;
@@ -55,5 +61,12 @@ public class Employee {
 
     public void setSalary(Integer salary) {
         this.salary = salary;
+    }
+
+    @Override
+    public String toString() {
+        return """
+                ID: %s, FirstName: %s, LastName: %s, Salary: %d
+                """.formatted(id, firstName, lastName, salary);
     }
 }

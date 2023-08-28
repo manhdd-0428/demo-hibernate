@@ -13,6 +13,7 @@ import org.hibernate.cfg.Configuration;
 
 public class ManageEmployee {
     private static SessionFactory factory;
+
     public static void main(String[] args) {
 
         try {
@@ -42,18 +43,18 @@ public class ManageEmployee {
 
     /* Method to CREATE an employee in the database */
 
-    public Integer addEmployee(String fname, String lname, int salary){
+    public Integer addEmployee(String fname, String lname, int salary) {
         Session session = factory.openSession();
         Transaction tx = null;
         Integer employeeID = null;
-
         try {
             tx = session.beginTransaction();
             Employee employee = new Employee(fname, lname, salary);
-            employeeID = (Integer) session.save(employee);
+            session.persist(employee);
+            employeeID = employee.getId();
             tx.commit();
         } catch (HibernateException e) {
-            if (tx!=null) tx.rollback();
+            if (tx != null) tx.rollback();
             e.printStackTrace();
         } finally {
             session.close();
@@ -62,62 +63,45 @@ public class ManageEmployee {
     }
 
     /* Method to  READ all the employees */
-    public void listEmployees( ){
-        Session session = factory.openSession();
+    public void listEmployees() {
         Transaction tx = null;
-
-        try {
+        try (Session session = factory.openSession()) {
             tx = session.beginTransaction();
-            List employees = session.createQuery("FROM Employee").list();
-            for (Iterator iterator = employees.iterator(); iterator.hasNext();){
-                Employee employee = (Employee) iterator.next();
-                System.out.print("First Name: " + employee.getFirstName());
-                System.out.print("  Last Name: " + employee.getLastName());
-                System.out.println("  Salary: " + employee.getSalary());
-            }
+            List<Employee> employees = session.createQuery("FROM Employee", Employee.class).list();
+            employees.forEach(System.out::println);
             tx.commit();
         } catch (HibernateException e) {
-            if (tx!=null) tx.rollback();
+            if (tx != null) tx.rollback();
             e.printStackTrace();
-        } finally {
-            session.close();
         }
     }
 
     /* Method to UPDATE salary for an employee */
-    public void updateEmployee(Integer EmployeeID, int salary ){
-        Session session = factory.openSession();
+    public void updateEmployee(Integer EmployeeID, int salary) {
         Transaction tx = null;
-
-        try {
+        try (Session session = factory.openSession()) {
             tx = session.beginTransaction();
-            Employee employee = (Employee)session.get(Employee.class, EmployeeID);
-            employee.setSalary( salary );
-            session.update(employee);
+            Employee employee = session.get(Employee.class, EmployeeID);
+            employee.setSalary(salary);
+            session.persist(employee);
             tx.commit();
         } catch (HibernateException e) {
-            if (tx!=null) tx.rollback();
+            if (tx != null) tx.rollback();
             e.printStackTrace();
-        } finally {
-            session.close();
         }
     }
 
     /* Method to DELETE an employee from the records */
-    public void deleteEmployee(Integer EmployeeID){
-        Session session = factory.openSession();
+    public void deleteEmployee(Integer EmployeeID) {
         Transaction tx = null;
-
-        try {
+        try (Session session = factory.openSession()) {
             tx = session.beginTransaction();
-            Employee employee = (Employee)session.get(Employee.class, EmployeeID);
-            session.delete(employee);
+            var employee = session.get(Employee.class, EmployeeID);
+            session.remove(employee);
             tx.commit();
         } catch (HibernateException e) {
-            if (tx!=null) tx.rollback();
+            if (tx != null) tx.rollback();
             e.printStackTrace();
-        } finally {
-            session.close();
         }
     }
 
@@ -137,10 +121,8 @@ public class ManageEmployee {
             selectedMenu = aScanner.nextInt();
 
             switch (selectedMenu) {
-                case 1 :
-                    this.listEmployees();
-                    break;
-                case 2 :
+                case 1 -> this.listEmployees();
+                case 2 -> {
                     System.out.println("Input first name: ");
                     String fname = aScanner.next();
                     System.out.println("Input last name: ");
@@ -148,15 +130,26 @@ public class ManageEmployee {
                     System.out.println("Input salary: ");
                     int salary = aScanner.nextInt();
                     this.addEmployee(fname, lname, salary);
-                case 0 :
-                    System.out.println("Exit ...");
-                    break;
-                default:
-                    System.out.println("Incorrect number");
-                    break;
+                }
+                case 3 -> {
+                    this.listEmployees();
+                    System.out.println("Input employess's ID: ");
+                    var id = aScanner.nextInt();
+                    System.out.println("Input salary: ");
+                    int sal = aScanner.nextInt();
+                    this.updateEmployee(id, sal);
+                }
+                case 4 -> {
+                    this.listEmployees();
+                    System.out.println("Input employess's ID: ");
+                    var emID = aScanner.nextInt();
+                    this.deleteEmployee(emID);
+                }
+                case 0 -> System.out.println("Exit ...");
+                default -> System.out.println("Incorrect number");
             }
 
-        } while(selectedMenu != 0);
+        } while (selectedMenu != 0);
     }
 
 }
